@@ -2,6 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-.svg-preview svg {
+.svg-preview svg:hover {
   filter: drop-shadow(0 0 10px rgb(0, 255, 255));
 }
