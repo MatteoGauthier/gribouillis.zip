@@ -12,18 +12,18 @@ const allSvgs = await getCollection("svgs")
   <div
     class="p-4 m-4 border border-black dark:border-white bg-white dark:bg-gray-900 dark:text-white transition-colors duration-300"
   >
-    <header class="mb-4 flex justify-between items-start">
+    <header class="md:mb-4 relative mb-1 flex justify-between items-start">
       <div>
         <h1 class="text-4xl font-bold">gribouillis.zip</h1>
         <div>
-          <Headline class="dark:invert transition-all duration-300" />
+          <Headline class="dark:invert w-[90vw] transition-all duration-300" />
           <p class="invisible">
             Des fois - souvent - je cherche des petites images vectoriels de flèches, je sais jamais où elles sont,
             elles sont là.
           </p>
         </div>
       </div>
-      <div class="-m-4 flex">
+      <div class=" flex absolute -top-4 -right-4">
         <a
           class="p-4 block bg-black text-white dark:bg-white dark:text-black hover:bg-gray-600 dark:hover:bg-gray-300 transition-colors duration-300"
           href="https://github.com/matteogauthier/gribouillis.zip"
