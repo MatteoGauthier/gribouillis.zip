@@ -1,11 +1,118 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro"
+import { getCollection } from "astro:content"
+import Headline from "../assets/headline.svg"
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allSvgs = await getCollection("svgs")
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="gribouillis.zip - Handdrawn SVG Collection">
+  <div class="p-4 m-4 border border-black">
+    <header class="mb-4">
+      <h1 class="text-4xl font-bold">gribouillis.zip</h1>
+      <div>
+        <Headline />
+        <p class="invisible">
+          Des fois - souvent - je cherche des petites images vectoriels de flèches, je sais jamais où elles sont, elles
+          sont là.
+        </p>
+      </div>
+    </header>
+
+    <main class="flex flex-wrap gap-1">
+      {
+        allSvgs.map((svg) => (
+          <div class="">
+            <button type="button" class="cursor-pointer svg-preview" data-svg={svg.body}>
+              <Fragment set:html={svg.body} />
+            </button>
+          </div>
+        ))
+      }
+    </main>
+  </div>
+
+  <script>
+    import confetti from "canvas-confetti"
+    // Add click handler to copy SVG code
+    document.addEventListener("DOMContentLoaded", () => {
+      const svgPreviews = document.querySelectorAll(".svg-preview")
+
+      svgPreviews.forEach((preview) => {
+        preview.addEventListener("click", () => {
+          const svgCode = preview.getAttribute("data-svg")
+          if (svgCode) {
+            navigator.clipboard
+              .writeText(svgCode)
+              .then(() => {
+                // Show a temporary "Copied!" message
+                const message = document.createElement("div")
+                message.textContent = "Copied!"
+                message.style.position = "absolute"
+                message.style.top = "0"
+                message.style.right = "0"
+                message.style.background = "#000"
+                message.style.color = "#fff"
+                message.style.padding = "4px 8px"
+                message.style.borderRadius = "4px"
+                message.style.fontSize = "12px"
+
+                // @ts-ignore
+                preview.style.position = "relative"
+                preview.appendChild(message)
+
+                const confettiCount = 500
+
+                confetti({
+                  particleCount: confettiCount,
+                  spread: 1000,
+                  angle: 120,
+                  origin: {
+                    x: 1,
+                    y: 1,
+                  },
+                })
+
+                confetti({
+                  particleCount: confettiCount,
+                  spread: 1000,
+                  angle: 120,
+                  origin: {
+                    x: 0,
+                    y: 0,
+                  },
+                })
+
+                confetti({
+                  particleCount: confettiCount,
+                  spread: 1000,
+                  angle: 120,
+
+                  origin: {
+                    x: 1,
+                    y: 0,
+                  },
+                })
+
+                confetti({
+                  particleCount: confettiCount,
+                  spread: 1000,
+                  angle: 120,
+                  origin: {
+                    x: 0,
+                    y: 1,
+                  },
+                })
+                setTimeout(() => {
+                  message.remove()
+                }, 2000)
+              })
+              .catch((err) => {
+                console.error("Failed to copy: ", err)
+              })
+          }
+        })
+      })
+    })
+  </script>
 </Layout>
