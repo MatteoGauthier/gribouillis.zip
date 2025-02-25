@@ -2,28 +2,73 @@
 import Layout from "../layouts/Layout.astro"
 import { getCollection } from "astro:content"
 import Headline from "../assets/headline.svg"
+import pecoImg from "../assets/peco.png"
+import { Image } from "astro:assets"
 
 const allSvgs = await getCollection("svgs")
 ---
 
 <Layout title="gribouillis.zip - Handdrawn SVG Collection">
-  <div class="p-4 m-4 border border-black">
-    <header class="mb-4">
-      <h1 class="text-4xl font-bold">gribouillis.zip</h1>
+  <div
+    class="p-4 m-4 border border-black dark:border-white bg-white dark:bg-gray-900 dark:text-white transition-colors duration-300"
+  >
+    <header class="mb-4 flex justify-between items-start">
       <div>
-        <Headline />
-        <p class="invisible">
-          Des fois - souvent - je cherche des petites images vectoriels de flèches, je sais jamais où elles sont, elles
-          sont là.
-        </p>
+        <h1 class="text-4xl font-bold">gribouillis.zip</h1>
+        <div>
+          <Headline class="dark:invert transition-all duration-300" />
+          <p class="invisible">
+            Des fois - souvent - je cherche des petites images vectoriels de flèches, je sais jamais où elles sont,
+            elles sont là.
+          </p>
+        </div>
       </div>
+      <button
+        id="theme-toggle"
+        class="-m-4 p-4 bg-black text-white dark:bg-white dark:text-black hover:bg-gray-600 dark:hover:bg-gray-300 transition-colors duration-300"
+        aria-label="Toggle dark mode"
+      >
+        <!-- Sun icon (for dark mode) -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 hidden dark:block"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
+        </svg>
+        <!-- Moon icon (for light mode) -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 block dark:hidden"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+      </button>
     </header>
 
     <main class="flex flex-wrap gap-1">
       {
         allSvgs.map((svg) => (
           <div class="">
-            <button type="button" class="cursor-pointer svg-preview" data-svg={svg.body}>
+            <button
+              type="button"
+              class="cursor-pointer  svg-preview dark:invert transition-all duration-300"
+              data-svg={svg.body}
+            >
               <Fragment set:html={svg.body} />
             </button>
           </div>
@@ -32,10 +77,39 @@ const allSvgs = await getCollection("svgs")
     </main>
   </div>
 
+  <footer class="fixed bottom-0 right-0 m-4">
+    <a href="https://matteogauthier.fr" target="_blank">
+      <Image src={pecoImg} alt="MatteoGauthier.fr link" width={100} height={100} />
+    </a>
+  </footer>
+
   <script>
     import confetti from "canvas-confetti"
-    // Add click handler to copy SVG code
+
+    document.documentElement.classList.toggle(
+      "dark",
+      localStorage.theme === "dark" ||
+        (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    )
+
+    // Theme toggle functionality
     document.addEventListener("DOMContentLoaded", () => {
+      const themeToggle = document.getElementById("theme-toggle")
+
+      // Toggle theme when button is clicked
+      themeToggle?.addEventListener("click", () => {
+        console.log("clicked")
+        document.documentElement.classList.toggle("dark")
+
+        // Save preference to localStorage
+        if (document.documentElement.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark")
+        } else {
+          localStorage.setItem("theme", "light")
+        }
+      })
+
+      // SVG copy functionality
       const svgPreviews = document.querySelectorAll(".svg-preview")
 
       svgPreviews.forEach((preview) => {
